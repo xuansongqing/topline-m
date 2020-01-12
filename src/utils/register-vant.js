@@ -7,7 +7,10 @@ import {
   Cell, CellGroup,
   Field,
   Toast,
-  CountDown
+  CountDown,
+  Tabbar,
+  TabbarItem,
+  Icon
 } from 'vant'
 // 注册
 Vue.use(Button)
@@ -17,3 +20,6 @@ Vue.use(Button)
   .use(Field)
   .use(Toast)
   .use(CountDown)
+  .use(Tabbar)
+  .use(TabbarItem)
+  .use(Icon)

@@ -6,7 +6,7 @@
     <ValidationObserver ref="form">
       <!-- //name 配置验证字段的名称 -->
       <!-- //rules 验证规则 -->
-      <ValidationProvider name="手机号" rules="required">
+      <ValidationProvider name="手机号" rules="required|mobile">
       <van-field
        required
        clearable
@@ -14,7 +14,7 @@
        placeholder="请输入手机号"
        v-model="user.mobile"/>
       </ValidationProvider>
-      <ValidationProvider name="验证码" rules="required">
+      <ValidationProvider name="验证码" rules="required|code">
         <van-field
           label="验证码"
           placeholder="请输入验证码"
@@ -28,6 +28,7 @@
             @finish="isCountDown=false"
           />
           <van-button
+          round
           v-else
           slot="button"
           size="small"
@@ -43,6 +44,7 @@
 
 <script>
 import { login, getSmsCode } from '@/api/user'
+import { validate } from 'vee-validate'
 export default {
   name: 'login-page',
   components: {},
@@ -72,12 +74,12 @@ export default {
 
         setTimeout(() => {
           const errors = this.$refs.form.errors
-          // find遍历数组  Object.values(errors)取出对象值，Object.keys(errors)去除对象键名
+          // 1. find遍历数组  Object.values(errors)取出对象值，Object.keys(errors)去除对象键名
           const item = Object.values(errors).find(item => {
             return item[0]
           })
           this.$toast(item[0])
-          // for循环
+          // 2. for循环
           // for (let key in errors) {
           //   const item = errors[key]
           //   if (item[0]) {
@@ -97,7 +99,8 @@ export default {
       // 3.请求提交
       try {
         const res = await login(user)
-        console.log(res)
+        this.$store.commit('setUser', res.data.data)
+        // console.log(res)
         // 登陆成功
         this.$toast.success('登陆成功')
       } catch (err) {
@@ -109,9 +112,17 @@ export default {
     async sendSmsCode () {
       // 1.获取手机号
       const { mobile } = this.user
-      // 校验手机号
+      // 2. 校验手机号
+      const validateResult = await validate(mobile, 'required|mobile', {
+        name: '手机号码'
+      })
 
-      // 发送验证吗
+      // 如果验证失败，提示错误消息，停止发送验证码
+      if (!validateResult.valid) {
+        this.$toast(validateResult.errors[0])
+        return
+      }
+      // 3.发送验证吗
       try {
         // 显示倒计时
         this.isCountDown = true
