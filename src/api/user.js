@@ -20,3 +20,7 @@ export const login = data => {
 export const getSmsCode = mobile => {
   return request({ method: 'GET', url: `/app/v1_0/sms/codes/${mobile}` })
 }
+// 获取登录个人信息
+export const getUserInfo = mobile => {
+  return request({ method: 'GET', url: '/app/v1_0/user' })
+}

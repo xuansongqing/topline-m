@@ -103,6 +103,7 @@ export default {
         // console.log(res)
         // 登陆成功
         this.$toast.success('登陆成功')
+        this.$router.push('/')
       } catch (err) {
         // console.log('登陆失败', err)
         this.$toast.fail('登陆失败')
